@@ -59,6 +59,6 @@ moving-ball-simulation/
 - [x] Layer 1: Static ball rendered on screen
 - [x] Layer 2: Game loop with delta time
 - [x] Layer 3: Ball class (position, velocity, radius)
-- [ ] Layer 4: Movement — `position += velocity * dt`
+- [x] Layer 4: Movement — `position += velocity * dt`
 - [ ] Layer 5: Bouncing — velocity flip on collision
 - [ ] Layer 6: Restitution, multiple balls, air drag

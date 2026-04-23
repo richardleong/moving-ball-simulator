@@ -17,8 +17,9 @@ public:
 		velocity = startVelocity;
 	}
 
-	void update(float dt) 
+	void update(float dt, float gravity) 
 	{
+		velocity.y += gravity * dt;
 		shape.move(velocity * dt);
 	}
 
@@ -40,6 +41,8 @@ int main()
 
 	Ball ball(80.f, { 300.f, 250.f }, { 100.f, 0.f });
 
+	const float gravity = 500.f;
+
 	while (window.isOpen()) 
 	{
 		float dt = clock.restart().asSeconds();
@@ -54,7 +57,7 @@ int main()
 		}
 
 		// "Update" phase
-		ball.update(dt);
+		ball.update(dt, gravity);
 
 		// "Render" phase: clear the window, draw everything, display the result on screen, etc.
 		window.clear();
