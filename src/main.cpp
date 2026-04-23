@@ -1,23 +1,44 @@
 #include <SFML/Graphics.hpp>
 
+class Ball 
+{
+public:
+	sf::CircleShape shape;
+	sf::Vector2f velocity;
+
+	Ball(float radius, sf::Vector2f startPos, sf::Vector2f startVelocity)
+	{
+		shape.setFillColor(sf::Color::Green);
+		shape.setOutlineThickness(5.f);
+		shape.setOutlineColor(sf::Color::Red);
+
+		shape.setRadius(radius);
+		shape.setPosition(startPos);
+		velocity = startVelocity;
+	}
+
+	void update(float dt) 
+	{
+		shape.move(velocity * dt);
+	}
+
+	void draw(sf::RenderWindow& window)
+	{
+		window.draw(shape);
+	}
+};
+
+
 int main()
 {
 	// "Initialization" phase: create the window, set up resources, etc.
 	sf::ContextSettings settings;
 	settings.antiAliasingLevel = 8;
 	sf::RenderWindow window(sf::VideoMode({800, 600}), "moving-ball-simulation", sf::Style::Default, sf::State::Windowed, settings);
-	sf::CircleShape ball(80.f);
-	ball.setFillColor(sf::Color::Green);
-	ball.setPosition({300.f, 250.f});
-	ball.setOutlineThickness(5.f);
-	ball.setOutlineColor(sf::Color::Red);
+	
 	sf::Clock clock;
-	float speed = 200.0f;
 
-	class Ball
-	{
-
-	};
+	Ball ball(80.f, { 300.f, 250.f }, { 100.f, 0.f });
 
 	while (window.isOpen()) 
 	{
@@ -33,11 +54,11 @@ int main()
 		}
 
 		// "Update" phase
-		ball.move({ speed * dt, 0.f });
+		ball.update(dt);
 
 		// "Render" phase: clear the window, draw everything, display the result on screen, etc.
 		window.clear();
-		window.draw(ball);
+		ball.draw(window);
 		window.display();
 	}
 

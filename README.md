@@ -56,9 +56,9 @@ moving-ball-simulation/
 ## Roadmap
 
 - [x] Project setup — CMake + SFML 3.1.0 static linking
-- [ ] Layer 1: Static ball rendered on screen
-- [ ] Layer 2: Game loop with delta time
-- [ ] Layer 3: Ball class (position, velocity, radius)
+- [x] Layer 1: Static ball rendered on screen
+- [x] Layer 2: Game loop with delta time
+- [x] Layer 3: Ball class (position, velocity, radius)
 - [ ] Layer 4: Movement — `position += velocity * dt`
 - [ ] Layer 5: Bouncing — velocity flip on collision
 - [ ] Layer 6: Restitution, multiple balls, air drag
