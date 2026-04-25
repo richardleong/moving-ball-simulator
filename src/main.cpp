@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 class Ball 
 {
@@ -17,15 +18,47 @@ public:
 		velocity = startVelocity;
 	}
 
-	void update(float dt, float gravity) 
+	void update(float dt, float gravity, float windowWidth, float windowHeight) 
 	{
 		velocity.y += gravity * dt;
 		shape.move(velocity * dt);
+		bounce(windowWidth, windowHeight);
 	}
 
 	void draw(sf::RenderWindow& window)
 	{
 		window.draw(shape);
+	}
+
+	void bounce(float windowWidth, float windowHeight)
+	{
+		sf::Vector2f pos = shape.getPosition();
+		float diameter = shape.getRadius() * 2;
+
+		float ballRightEdge = pos.x + diameter;
+		float ballBottomEdge = pos.y + diameter;
+
+		if (ballRightEdge >= windowWidth) 
+		{
+			shape.setPosition({ windowWidth - diameter, pos.y });
+			velocity.x = -velocity.x;
+		}
+		else if (pos.x <= 0) 
+		{
+			shape.setPosition({ 0, pos.y });
+			velocity.x = -velocity.x;
+			
+		}
+		if (ballBottomEdge >= windowHeight) 
+		{
+			shape.setPosition({ pos.x, windowHeight - diameter });
+			velocity.y = -velocity.y;
+		}
+		else if (pos.y <= 0)
+		{
+			shape.setPosition({ pos.x, 0 });
+			velocity.y = -velocity.y;
+		}
 	}
 };
 
@@ -39,7 +72,7 @@ int main()
 	
 	sf::Clock clock;
 
-	Ball ball(80.f, { 300.f, 250.f }, { 100.f, 0.f });
+	Ball ball(80.f, { 300.f, 250.f }, { 500.f, -10.f }); // radius, start position, start velocity
 
 	const float gravity = 500.f;
 
@@ -57,7 +90,9 @@ int main()
 		}
 
 		// "Update" phase
-		ball.update(dt, gravity);
+		ball.update(dt, gravity, window.getSize().x, window.getSize().y);
+		std::cout << "Ball position: " << ball.shape.getPosition().x << ", " << ball.shape.getPosition().y << std::endl;
+		
 
 		// "Render" phase: clear the window, draw everything, display the result on screen, etc.
 		window.clear();
