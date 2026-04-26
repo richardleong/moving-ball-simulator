@@ -67,6 +67,11 @@ public:
 			velocity.y = -velocity.y * restitution;
 		}
 	}
+
+	sf::Vector2f getCentre()
+	{
+		return shape.getPosition() + sf::Vector2f(shape.getRadius(), shape.getRadius());
+	}
 };
 
 // Utility functions for random number generation
@@ -90,6 +95,48 @@ int randomInt(int min, int max)
 	std::uniform_int_distribution<int> dist(min, max); // distribution that produces random integers in the range [min, max]
 	
 	return dist(prng());
+}
+
+void resolveBallCollision(Ball& a, Ball& b)
+{
+	sf::Vector2f aCentre = a.getCentre();
+	sf::Vector2f bCentre = b.getCentre();
+
+	float dx = bCentre.x - aCentre.x;
+	float dy = bCentre.y - aCentre.y;
+	float distance = std::sqrt(dx * dx + dy * dy); // Pythagorean theorem to calculate distance between centers
+
+	float minDist = a.shape.getRadius() + b.shape.getRadius();
+
+	// no collision
+	if (distance >= minDist || distance == 0) 
+		return;
+
+	// collision normal (unit vector pointing from a to b)
+	float nx = dx / distance;
+	float ny = dy / distance;
+
+	// push balls apart so they don't overlap
+	float overlap = minDist - distance;
+	a.shape.move({ -nx * overlap / 2, -ny * overlap / 2 });
+	b.shape.move({ nx * overlap / 2,  ny * overlap / 2 });
+
+	// relative velocity along the normal
+	float dvx = b.velocity.x - a.velocity.x;
+	float dvy = b.velocity.y - a.velocity.y;
+	float dotProduct = dvx * nx + dvy * ny;
+
+	// only resolve if balls are moving toward each other
+	if (dotProduct > 0) return;
+
+	// apply impulse (average restitution of both balls)
+	float restitution = (a.restitution + b.restitution) / 2.f;
+	float impulse = (1.f + restitution) * -(dotProduct / 2.f);
+
+	a.velocity.x -= impulse * nx;
+	a.velocity.y -= impulse * ny;
+	b.velocity.x += impulse * nx;
+	b.velocity.y += impulse * ny;
 }
 
 int main()
@@ -131,6 +178,15 @@ int main()
 		{
 			ball.update(dt, gravity, window.getSize().x, window.getSize().y);
 			// std::cout << "Ball position: " << ball.shape.getPosition().x << ", " << ball.shape.getPosition().y << std::endl;
+		}
+
+		// Check for collisions between balls
+		for (size_t i = 0; i < balls.size(); ++i)
+		{
+			for (size_t j = i + 1; j < balls.size(); ++j)
+			{
+				resolveBallCollision(balls[i], balls[j]);
+			}
 		}
 
 		// "Render" phase: clear the window, draw everything, display the result on screen, etc.
