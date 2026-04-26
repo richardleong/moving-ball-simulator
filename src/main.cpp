@@ -1,7 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include <cstdlib>
-#include <ctime>
+#include <random>
 
 class Ball 
 {
@@ -12,9 +11,9 @@ public:
 
 	Ball(float radius, sf::Vector2f startPos, sf::Vector2f startVelocity)
 	{
-		shape.setFillColor(sf::Color::Green);
-		shape.setOutlineThickness(5.f);
-		shape.setOutlineColor(sf::Color::Red);
+		shape.setFillColor(sf::Color::Magenta);
+		// shape.setOutlineThickness(5.f);
+		// shape.setOutlineColor(sf::Color::Red);
 
 		shape.setRadius(radius);
 		shape.setPosition(startPos);
@@ -70,14 +69,29 @@ public:
 	}
 };
 
-/* 
-Generate random float between min and max:
-rand() returns a value between 0 and RAND_MAX, so we normalize it to [0, 1], then scale and shift to [min, max] and add it to min.
-*/
+// Utility functions for random number generation
+std::mt19937& prng()
+{
+	static std::random_device rd; // "random device" to obtain a seed value from hardware
+	static std::mt19937 gen(rd()); // Mersenne Twister generator
+
+	return gen;
+}
+
 float randomFloat(float min, float max)
 {
-	return (static_cast<float>(rand()) / (RAND_MAX) * (max - min)) + min;
+	std::uniform_real_distribution<float> dist(min, max); // distribution that produces random floats in the range [min, max]
+
+	return dist(prng());
 }
+
+int randomInt(int min, int max)
+{
+	std::uniform_int_distribution<int> dist(min, max); // distribution that produces random integers in the range [min, max]
+	
+	return dist(prng());
+}
+
 int main()
 {
 	// "Initialization" phase: create the window, set up resources, etc.
@@ -86,9 +100,7 @@ int main()
 	sf::RenderWindow window(sf::VideoMode({800, 600}), "moving-ball-simulation", sf::Style::Default, sf::State::Windowed, settings);
 	sf::Clock clock;
 
-	srand(static_cast<unsigned int>(time(nullptr))); // seed the random number generator
-
-	int numBalls = static_cast<int>(randomFloat(1, 10));
+	int numBalls = randomInt(1, 10);
 	std::vector<Ball> balls;
 
 	for (int i = 0; i < numBalls; ++i)
