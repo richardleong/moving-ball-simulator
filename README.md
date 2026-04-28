@@ -31,6 +31,7 @@ cd moving-ball-simulation
 mkdir build && cd build
 cmake ..
 cmake --build .
+./MovingBallSimulation
 ```
 
 ## Project Structure
