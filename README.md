@@ -2,10 +2,6 @@
 
 A real-time kinematics simulation built with **C++17** and **SFML 3.1.0**, exploring vector-based physics and 2D collision detection.
 
-> ⚠️ **Work in progress** — physics engine and ball class are actively being developed.
-
----
-
 ## Features
 
 - **Kinematics engine** *(in progress)* — velocity and acceleration integration using `position += velocity * dt`
@@ -27,7 +23,7 @@ A real-time kinematics simulation built with **C++17** and **SFML 3.1.0**, explo
 
 ## Building
 
-SFML is fetched automatically via CMake's `FetchContent` — no manual setup required.
+SFML 3.1.0 is required. Download from [sfml-dev.org](https://sfml-dev.org/download) and place the extracted folder in the project root as `SFML/`.
 
 ```bash
 git clone https://github.com/richardleong/moving-ball-simulation.git
@@ -36,10 +32,6 @@ mkdir build && cd build
 cmake ..
 cmake --build .
 ```
-
-> Requires CMake 3.22+ and a C++17 compatible compiler (MSVC recommended on Windows).
-
----
 
 ## Project Structure
 
